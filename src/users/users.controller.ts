@@ -18,8 +18,8 @@ export class UsersController {
 
   @Post('/register')
   @UsePipes(new UserRegisterPipe())
-  public registerUser(@Body() userRegisterDto: UserRegisterDto) {
-    return this.usersService.registerUser(userRegisterDto);
+  public async registerUser(@Body() userRegisterDto: UserRegisterDto) {
+    return await this.usersService.registerUser(userRegisterDto);
   }
 
   @Post('/login')

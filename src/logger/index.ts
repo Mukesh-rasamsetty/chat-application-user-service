@@ -1,16 +1,16 @@
 import { Logger } from '@nestjs/common';
 
 export class UserLogger {
-  private static readonly logger = new Logger('UserLogger');
+  private static readonly logger = new UserLogger();
 
-  public static getLogger(): Logger {
+  public static getLogger(): UserLogger {
     return this.logger;
   }
 
   private getTimestamp(): string {
     return new Date().toISOString();
   }
-  log(fileName: string, message: string): void {
+  info(fileName: string, message: string): void {
     Logger.log(`[${this.getTimestamp()}] [${fileName}]: ${message}`);
   }
 
