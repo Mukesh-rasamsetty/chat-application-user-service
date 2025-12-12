@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, UsePipes } from '@nestjs/common';
 import { UserRegisterPipe } from 'src/pipes';
-import { UserRegisterDto } from './models';
+import type { UserRegisterDto } from './models';
 import { UsersService } from './users.service';
 
 @Controller('users')

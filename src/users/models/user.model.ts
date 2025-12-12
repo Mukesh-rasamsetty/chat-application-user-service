@@ -1,4 +1,4 @@
-export class UserRegisterDto {
+export interface UserRegisterDto {
   readonly firstName: string;
   readonly lastName: string;
   readonly username: string;
