@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { UsersService } from './users.service';
+import { Body, Controller, Get, Post, UsePipes } from '@nestjs/common';
+import { UserRegisterPipe } from 'src/pipes';
 import { UserRegisterDto } from './models';
+import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
@@ -16,6 +17,7 @@ export class UsersController {
   }
 
   @Post('/register')
+  @UsePipes(new UserRegisterPipe())
   public registerUser(@Body() userRegisterDto: UserRegisterDto) {
     return this.usersService.registerUser(userRegisterDto);
   }
