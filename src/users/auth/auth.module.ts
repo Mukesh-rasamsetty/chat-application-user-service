@@ -1,5 +1,6 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
+import { JwtConstants } from 'src/config/global.constant';
 import { UsersModule } from '../users.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -10,7 +11,7 @@ import { AuthService } from './auth.service';
   imports: [
     JwtModule.register({
       global: true,
-      secret: 'jwtConstants.secret',
+      secret: JwtConstants.secret,
       signOptions: { expiresIn: '60s' },
     }),
     forwardRef(() => UsersModule),
