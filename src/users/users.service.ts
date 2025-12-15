@@ -13,8 +13,23 @@ export class UsersService {
     this.log = UserLogger.getLogger();
   }
 
-  public getUserProfile() {
-    return 'User profile data';
+  public async getUserProfile(username: string) {
+    this.log.info('UsersService', `Fetching profile for user: ${username}`);
+    try {
+      const user = await this.userModel.findOne({ username }).exec();
+      if (!user) {
+        this.log.error('UsersService', `User not found: ${username}`);
+        throw new HttpException('User not found', 404);
+      }
+      this.log.info('UsersService', `User profile fetched: ${username}`);
+      return user;
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      this.log.error('UsersService', `Error fetching user profile: ${error}`);
+      throw new HttpException('Error fetching user profile', 500);
+    }
   }
 
   public async registerUser(userRegisterDto: UserRegisterDto) {
@@ -38,14 +53,11 @@ export class UsersService {
       return `User Registrated Successfully with username: ${userRegisterDto.username}`;
     } catch (error) {
       this.log.error('UsersService', `Error registering user: ${error}`);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (error?.code === 11000) {
         throw new HttpException('Username already exists', 400);
       }
       throw new HttpException('Error registering user', 500);
     }
-  }
-
-  public loginUser() {
-    return 'User login logic';
   }
 }
