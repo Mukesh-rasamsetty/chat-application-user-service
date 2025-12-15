@@ -1,4 +1,5 @@
-import { Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Param, Post } from '@nestjs/common';
+import type { AddContactRequest, RemoveContactRequest } from './contact.model';
 import { ContactService } from './contact.service';
 
 @Controller('users/contacts')
@@ -10,22 +11,31 @@ export class ContactController {
   }
 
   @Get('/')
-  public getContacts() {
-    return this.contactService.getContacts();
+  public async getContacts(@Headers('username') username: string) {
+    return await this.contactService.getContacts(username);
   }
 
   @Get('/search/:keyword')
-  public searchConntact(@Param('keyword') keyword: string) {
-    return this.contactService.searchContact(keyword);
+  public searchConntact(
+    @Headers('username') username: string,
+    @Param('keyword') keyword: string,
+  ) {
+    return this.contactService.searchContact(username, keyword);
   }
 
   @Post('/add')
-  public addContact() {
-    return this.contactService.addContact();
+  public async addContact(
+    @Headers('username') username: string,
+    @Body() request: AddContactRequest,
+  ) {
+    return await this.contactService.addContact(username, request);
   }
 
   @Post('/remove')
-  public removeContact() {
-    return this.contactService.removeContact();
+  public async removeContact(
+    @Headers('username') username: string,
+    @Body() request: RemoveContactRequest,
+  ) {
+    return await this.contactService.removeContact(username, request);
   }
 }
