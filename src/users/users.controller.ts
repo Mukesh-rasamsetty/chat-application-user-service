@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Post, Query, UsePipes } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Post, UsePipes } from '@nestjs/common';
+import { Public } from 'src/config/public.decorator';
 import { UserRegisterPipe } from 'src/pipes';
 import type { UserRegisterDto, UserResponse } from './models';
 import { UsersService } from './users.service';
@@ -12,7 +13,9 @@ export class UsersController {
   }
 
   @Get('/profile')
-  public async getUserProfile(@Query('username') username: string) {
+  public async getUserProfile(
+    @Headers('username') username: string,
+  ): Promise<UserResponse> {
     const user = await this.usersService.getUserProfile(username);
     const userResponse: UserResponse = {
       firstName: user.firstName,
@@ -24,6 +27,7 @@ export class UsersController {
     return userResponse;
   }
 
+  @Public()
   @Post('/register')
   @UsePipes(new UserRegisterPipe())
   public async registerUser(@Body() userRegisterDto: UserRegisterDto) {

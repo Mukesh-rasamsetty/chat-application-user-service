@@ -8,7 +8,9 @@ import {
   type CanActivate,
   type ExecutionContext,
 } from '@nestjs/common';
-import type { JwtService } from '@nestjs/jwt';
+import { Reflector } from '@nestjs/core';
+import { JwtService } from '@nestjs/jwt';
+import { IS_PUBLIC_KEY } from 'src/config/public.decorator';
 import { UserLogger } from 'src/logger';
 
 @Injectable()
@@ -16,21 +18,21 @@ export class AuthGuard implements CanActivate {
   private readonly log: UserLogger;
   constructor(
     private readonly jwtService: JwtService,
-    // private readonly reflector: Reflector,
+    private readonly reflector: Reflector,
   ) {
     this.log = new UserLogger();
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     this.log.info('AuthGuard', 'Guradian called to verify JWT token');
-    /*const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
       context.getClass(),
     ]);
     if (isPublic) {
       this.log.info('AuthGuard', 'Public route, no token verification needed');
       return true;
-    }*/
+    }
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
     if (!token) {
@@ -41,9 +43,12 @@ export class AuthGuard implements CanActivate {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: 'jwtConstants.secret',
       });
-      request.headers.set('username', payload.username);
-    } catch {
-      this.log.error('AuthGuard', 'Token verification failed');
+      request.headers['username'] = payload.username;
+    } catch (error) {
+      this.log.error(
+        'AuthGuard',
+        `Token verification failed: ${error.message}`,
+      );
       throw new UnauthorizedException();
     }
     this.log.info('AuthGuard', 'Token verified successfully');

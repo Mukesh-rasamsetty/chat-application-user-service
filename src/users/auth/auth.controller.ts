@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Post,
 } from '@nestjs/common';
+import { Public } from 'src/config/public.decorator';
 import { UserLogger } from 'src/logger';
 import type { LoginRequest } from './auth.model';
 import { AuthService } from './auth.service';
@@ -19,6 +20,7 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @Public()
   @Post('/login')
   async signIn(@Body() request: LoginRequest) {
     if (!request?.username || !request?.password) {
