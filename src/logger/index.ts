@@ -1,9 +1,12 @@
 import { Logger } from '@nestjs/common';
 
 export class UserLogger {
-  private static readonly logger = new UserLogger();
+  private static logger: UserLogger;
 
   public static getLogger(): UserLogger {
+    if (!this.logger) {
+      this.logger = new UserLogger();
+    }
     return this.logger;
   }
 

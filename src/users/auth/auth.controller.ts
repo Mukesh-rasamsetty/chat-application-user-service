@@ -2,6 +2,8 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
+  Headers,
   HttpCode,
   HttpStatus,
   Post,
@@ -28,5 +30,11 @@ export class AuthController {
       throw new BadRequestException('Username and password are required');
     }
     return await this.authService.validateUser(request);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Get('/verify')
+  verifyToken(@Headers('username') username: string) {
+    return { m: 'Token is valid', q: username };
   }
 }
